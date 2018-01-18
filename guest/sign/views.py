@@ -11,23 +11,25 @@ def index(request):
     return render(request, "index.html")
 
 
+# 登录动作
 def login_action(request):
-    if request.method == 'POST':
-        username = request.POST.get('username', "")
-        password = request.POST.get('password', "")
+    if request.method == "POST":
+        # 寻找名为 "username"和"password"的POST参数，而且如果参数没有提交，返回一个空的字符串。
+        username = request.POST.get("username","")
+        password = request.POST.get("password","")
         if username == '' or password == '':
-            return render(request, "index.html", {"error": "username or password null!"})
-        user = auth.authenticate(username=username, password=password)
-        if username is not None:
-            auth.login(request, user)  # 验证登录
-            response = HttpResponseRedirect('/event_manage/')
-            # response.set_cookie('user', username, 3600)
-            request.session['user'] = username  # 存入session信息到浏览器中
-            request.session['pwd'] = password
+            return render(request,"index.html",{"error":"username or password null!"})
+
+        user = auth.authenticate(username = username, password = password)
+        if user is not None:
+            auth.login(request, user) # 验证登录
+            response = HttpResponseRedirect('/event_manage/') # 登录成功跳转发布会管理
+            request.session['username'] = username    # 将 session 信息写到服务器
             return response
         else:
-            return render(request, 'index.html', {'error': 'username or password error!'})
-    return render(request, "index.html")
+            return render(request,"index.html",{"error":"username or password error!"})
+    # 防止直接通过浏览器访问 /login_action/ 地址。
+    return render(request,"index.html")
 
 
 @login_required()
