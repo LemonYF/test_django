@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from sign.models import Event, Guest
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.utils import IntegrityError
+import time
 
 
 def add_event(request):
